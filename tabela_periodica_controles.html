@@ -99,6 +99,18 @@
             z-index: 10;
         }
 
+        /* Evitar hover em dispositivos touch */
+        @media (hover: none) {
+            .control-card:hover {
+                transform: none;
+            }
+            
+            .control-card:active {
+                transform: scale(0.98);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+        }
+
         .control-id {
             font-size: 1.4em;
             font-weight: bold;
@@ -212,6 +224,200 @@
         .domain-gestao-de-riscos { border-color: #d35400; background: #ffe5d0; }
         .domain-seguranca-tecnica--operacoes { border-color: #34495e; background: #e5e8ed; }
         .domain-terceiros--cloud { border-color: #7f8c8d; background: #e5e8ed; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                background: linear-gradient(to bottom, #0a1f3d 0%, #0a1f3d 10%, #ffffff 10%, #ffffff 90%, #0a1f3d 90%, #0a1f3d 100%);
+            }
+
+            .main-wrapper {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+                border-radius: 5px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+
+            .legend {
+                padding: 15px;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            .legend-item {
+                font-size: 0.8em;
+            }
+
+            .legend-color {
+                width: 25px;
+                height: 25px;
+            }
+
+            .periodic-table {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 10px;
+                margin-top: 20px;
+            }
+
+            .control-card {
+                min-height: 120px;
+                padding: 12px;
+            }
+
+            .control-id {
+                font-size: 1.2em;
+                margin-bottom: 6px;
+            }
+
+            .control-name {
+                font-size: 0.75em;
+            }
+
+            .modal-content {
+                margin: 20px 10px;
+                padding: 20px;
+                max-width: 95%;
+            }
+
+            .modal-id {
+                font-size: 1.5em;
+            }
+
+            .modal-name {
+                font-size: 1.1em;
+            }
+
+            .modal-section-title {
+                font-size: 1em;
+            }
+
+            .modal-section-content {
+                font-size: 0.9em;
+            }
+
+            .close {
+                font-size: 24px;
+                right: 15px;
+                top: 15px;
+            }
+
+            #fileInputContainer button {
+                padding: 12px 18px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                background: #ffffff;
+            }
+
+            .main-wrapper {
+                padding: 5px;
+            }
+
+            .container {
+                padding: 10px;
+                border-radius: 0;
+            }
+
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 15px;
+            }
+
+            .legend {
+                padding: 10px;
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+
+            .legend-item {
+                font-size: 0.75em;
+            }
+
+            .legend-color {
+                width: 20px;
+                height: 20px;
+            }
+
+            .periodic-table {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 8px;
+                margin-top: 15px;
+            }
+
+            .control-card {
+                min-height: 100px;
+                padding: 10px;
+                border-width: 2px;
+            }
+
+            .control-id {
+                font-size: 1em;
+                margin-bottom: 5px;
+            }
+
+            .control-name {
+                font-size: 0.7em;
+            }
+
+            .modal-content {
+                margin: 10px 5px;
+                padding: 15px;
+                max-width: 100%;
+                border-radius: 5px;
+            }
+
+            .modal-id {
+                font-size: 1.3em;
+            }
+
+            .modal-name {
+                font-size: 1em;
+            }
+
+            .modal-section {
+                margin-bottom: 15px;
+            }
+
+            .modal-section-title {
+                font-size: 0.95em;
+            }
+
+            .modal-section-content {
+                font-size: 0.85em;
+                padding-left: 5px;
+            }
+
+            .close {
+                font-size: 20px;
+                right: 10px;
+                top: 10px;
+            }
+
+            .loading {
+                padding: 30px 20px;
+                font-size: 1em;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .periodic-table {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+
+            .container {
+                padding: 25px;
+            }
+        }
     </style>
 </head>
 <body>
