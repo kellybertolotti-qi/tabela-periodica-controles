@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Framework QI SEC - QI Tech GRC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #0a1f3d 0%, #0a1f3d 15%, #ffffff 15%, #ffffff 85%, #0a1f3d 85%, #0a1f3d 100%);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            color: #333;
+        }
+        
+        .main-wrapper {
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0a1f3d;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            border: 2px solid #333;
+        }
+
+        .legend-text {
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .control-card {
+            background: white;
+            border: 3px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .control-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .control-id {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #0a1f3d;
+            margin-bottom: 8px;
+        }
+
+        .control-name {
+            font-size: 0.85em;
+            color: #555;
+            line-height: 1.3;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 900px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .modal-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #0a1f3d;
+        }
+
+        .modal-id {
+            font-size: 2em;
+            font-weight: bold;
+            color: #0a1f3d;
+            margin-bottom: 10px;
+        }
+
+        .modal-name {
+            font-size: 1.3em;
+            color: #555;
+        }
+
+        .modal-section {
+            margin-bottom: 25px;
+        }
+
+        .modal-section-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #0a1f3d;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .modal-section-content {
+            font-size: 0.95em;
+            color: #333;
+            line-height: 1.6;
+            padding-left: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        /* Cores por domínio */
+        .domain-seguranca-de-aplicacoes { border-color: #e74c3c; background: #ffe5e5; }
+        .domain-ativos-dados--classificacao { border-color: #3498db; background: #e5f3ff; }
+        .domain-conscientizacao-e-capacitacao { border-color: #9b59b6; background: #f4e5ff; }
+        .domain-continuidade--resiliencia { border-color: #e67e22; background: #ffe5d0; }
+        .domain-desenvolvimento-seguro { border-color: #1abc9c; background: #d0f5ef; }
+        .domain-governanca--politicas { border-color: #f39c12; background: #fff4e5; }
+        .domain-gestao-de-identidades--acessos { border-color: #16a085; background: #d0f5ef; }
+        .domain-gestao-de-incidentes { border-color: #c0392b; background: #ffe5e5; }
+        .domain-monitoramento--logs { border-color: #2980b9; background: #e5f3ff; }
+        .domain-cartoes--pci-dss { border-color: #8e44ad; background: #f4e5ff; }
+        .domain-privacidade--lgpd { border-color: #27ae60; background: #d0f5ef; }
+        .domain-gestao-de-riscos { border-color: #d35400; background: #ffe5d0; }
+        .domain-seguranca-tecnica--operacoes { border-color: #34495e; background: #e5e8ed; }
+        .domain-terceiros--cloud { border-color: #7f8c8d; background: #e5e8ed; }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+    <div class="container">
+        <h1>Framework QI SEC</h1>
+        
+        <div id="fileInputContainer" style="text-align: center; margin-bottom: 20px; display: none;">
+            <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+            <button onclick="document.getElementById('csvFileInput').click()" style="padding: 10px 20px; background: #0a1f3d; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">
+                Carregar Arquivo CSV Manualmente
+            </button>
+            <p style="margin-top: 10px; color: #666; font-size: 0.9em;">
+                Dica: Para carregamento automático, execute o servidor local (servidor_local.py ou servidor_local.bat)
+            </p>
+        </div>
+        
+        <div class="legend" id="legend"></div>
+        
+        <div class="loading" id="loading">Carregando controles...</div>
+        <div class="periodic-table" id="periodicTable"></div>
+        
+        <!-- Mensagem de debug -->
+        <div id="debugInfo" style="display: none; padding: 20px; background: #f0f0f0; margin-top: 20px; border-radius: 5px;">
+            <h3>Informações de Debug</h3>
+            <pre id="debugText"></pre>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        let controls = [];
+        let domains = new Set();
+
+        // Função para normalizar nome do domínio para classe CSS
+        function normalizeDomain(domain) {
+            if (!domain) return '';
+            return domain.toLowerCase()
+                .replace(/[&,]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/--+/g, '-')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        // Mapeamento de cores por domínio
+        const domainColors = {
+            'Seguranca de Aplicacoes': { border: '#e74c3c', bg: '#ffe5e5' },
+            'Ativos, Dados & Classificacao': { border: '#3498db', bg: '#e5f3ff' },
+            'Conscientizacao e Capacitacao': { border: '#9b59b6', bg: '#f4e5ff' },
+            'Continuidade & Resiliencia': { border: '#e67e22', bg: '#ffe5d0' },
+            'Desenvolvimento Seguro': { border: '#1abc9c', bg: '#d0f5ef' },
+            'Governanca & Politicas': { border: '#f39c12', bg: '#fff4e5' },
+            'Gestao de Identidades & Acessos': { border: '#16a085', bg: '#d0f5ef' },
+            'Gestao de Incidentes': { border: '#c0392b', bg: '#ffe5e5' },
+            'Monitoramento & Logs': { border: '#2980b9', bg: '#e5f3ff' },
+            'Cartoes & PCI DSS': { border: '#8e44ad', bg: '#f4e5ff' },
+            'Privacidade & LGPD': { border: '#27ae60', bg: '#d0f5ef' },
+            'Gestao de Riscos': { border: '#d35400', bg: '#ffe5d0' },
+            'Seguranca Tecnica & Operacoes': { border: '#34495e', bg: '#e5e8ed' },
+            'Terceiros & Cloud': { border: '#7f8c8d', bg: '#e5e8ed' }
+        };
+
+        // Função para obter cor do domínio
+        function getDomainClass(domain) {
+            const normalized = normalizeDomain(domain);
+            return `domain-${normalized}`;
+        }
+
+        // Função para obter estilos do domínio
+        function getDomainStyles(domain) {
+            if (domainColors[domain]) {
+                return domainColors[domain];
+            }
+            // Cor padrão se não encontrar
+            return { border: '#95a5a6', bg: '#ecf0f1' };
+        }
+
+        // Função para parsear CSV corretamente, lidando com quebras de linha dentro de campos
+        function parseCSV(text) {
+            const data = [];
+            let i = 0;
+            const len = text.length;
+            
+            // Pular cabeçalho - encontrar primeira quebra de linha
+            while (i < len && text[i] !== '\n' && text[i] !== '\r') {
+                i++;
+            }
+            // Pular quebra de linha
+            if (i < len && text[i] === '\r') i++;
+            if (i < len && text[i] === '\n') i++;
+            
+            // Processar registros
+            while (i < len) {
+                // Pular linhas vazias e espaços em branco
+                while (i < len && (text[i] === '\n' || text[i] === '\r' || text[i] === ' ' || text[i] === '\t')) {
+                    if (text[i] === '\r') {
+                        i++;
+                        if (i < len && text[i] === '\n') i++;
+                    } else if (text[i] === '\n') {
+                        i++;
+                    } else {
+                        i++;
+                    }
+                }
+                
+                if (i >= len) break;
+                
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                
+                // Processar um registro completo (10 campos separados por ;)
+                // Um registro termina quando temos 10 campos E estamos fora de aspas E encontramos quebra de linha
+                while (i < len && values.length < 10) {
+                    const char = text[i];
+                    const nextChar = i + 1 < len ? text[i + 1] : '';
+                    const prevChar = i > 0 ? text[i - 1] : '';
+                    
+                    if (char === '"') {
+                        // Verificar se é aspas escapadas (duas aspas seguidas)
+                        if (nextChar === '"' && inQuotes) {
+                            current += '"';
+                            i += 2;
+                            continue;
+                        }
+                        inQuotes = !inQuotes;
+                        i++;
+                    } else if (char === ';' && !inQuotes) {
+                        // Fim do campo
+                        values.push(current);
+                        current = '';
+                        i++;
+                    } else if ((char === '\n' || (char === '\r' && nextChar === '\n')) && !inQuotes && values.length >= 9) {
+                        // Fim do registro (já temos pelo menos 9 campos, este é o último)
+                        values.push(current);
+                        if (char === '\r') i++;
+                        if (i < len && text[i] === '\n') i++;
+                        break;
+                    } else {
+                        current += char;
+                        i++;
+                    }
+                }
+                
+                // Se ainda não temos 10 campos mas chegamos ao fim ou a uma quebra de linha fora de aspas
+                if (values.length < 10 && current) {
+                    values.push(current);
+                }
+                
+                // Garantir que temos pelo menos 10 campos (preencher com vazio se necessário)
+                while (values.length < 10) {
+                    values.push('');
+                }
+                
+                // Verificar se tem pelo menos ID (primeira coluna)
+                if (values[0] && values[0].trim() !== '') {
+                    // Limpar e processar cada campo
+                    const cleanField = (field) => {
+                        if (!field) return '';
+                        return field.trim()
+                            .replace(/^["']+|["']+$/g, '') // Remove aspas do início e fim
+                            .replace(/\s*\|\s*-\s*\|\s*/g, ' ') // Remove separadores "|-|"
+                            .replace(/\n/g, ' ') // Substitui quebras de linha por espaço
+                            .replace(/\s+/g, ' ') // Remove espaços múltiplos
+                            .trim();
+                    };
+                    
+                    const control = {
+                        id: cleanField(values[0]),
+                        dominio: cleanField(values[1]),
+                        nome: cleanField(values[2]),
+                        descricao: cleanField(values[3]),
+                        iso: cleanField(values[4]),
+                        nist: cleanField(values[5]),
+                        cis: cleanField(values[6]),
+                        reguladores: cleanField(values[7]),
+                        responsavel: cleanField(values[8]),
+                        evidencia: cleanField(values[9])
+                    };
+                    
+                    data.push(control);
+                    if (control.dominio) {
+                        domains.add(control.dominio);
+                    }
+                }
+            }
+            
+            return data;
+        }
+
+        // Função para criar legenda
+        function createLegend() {
+            const legendDiv = document.getElementById('legend');
+            const domainArray = Array.from(domains).sort();
+            
+            domainArray.forEach(domain => {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                
+                const colorBox = document.createElement('div');
+                colorBox.className = 'legend-color';
+                const styles = getDomainStyles(domain);
+                colorBox.style.borderColor = styles.border;
+                colorBox.style.backgroundColor = styles.bg;
+                
+                const text = document.createElement('span');
+                text.className = 'legend-text';
+                text.textContent = domain;
+                
+                item.appendChild(colorBox);
+                item.appendChild(text);
+                legendDiv.appendChild(item);
+            });
+        }
+
+        // Função para criar card
+        function createCard(control) {
+            const card = document.createElement('div');
+            card.className = `control-card ${getDomainClass(control.dominio)}`;
+            
+            // Aplicar estilos dinamicamente
+            const styles = getDomainStyles(control.dominio);
+            card.style.borderColor = styles.border;
+            card.style.backgroundColor = styles.bg;
+            
+            const idDiv = document.createElement('div');
+            idDiv.className = 'control-id';
+            idDiv.textContent = control.id;
+            
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'control-name';
+            nameDiv.textContent = control.nome;
+            
+            card.appendChild(idDiv);
+            card.appendChild(nameDiv);
+            
+            card.addEventListener('click', () => showModal(control));
+            
+            return card;
+        }
+
+        // Função para escapar HTML e formatar texto
+        function escapeHtml(text) {
+            if (!text) return 'Não informado';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Função para formatar campo (remove espaços extras e formata)
+        function formatField(field) {
+            if (!field || field.trim() === '') return 'Não informado';
+            return field.trim()
+                .replace(/\s+/g, ' ')
+                .replace(/;\s*/g, '; ')
+                .replace(/,\s*/g, ', ');
+        }
+
+        // Função para mostrar modal
+        function showModal(control) {
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalBody.innerHTML = `
+                <div class="modal-header">
+                    <div class="modal-id">${escapeHtml(control.id)}</div>
+                    <div class="modal-name">${escapeHtml(control.nome)}</div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">Descrição Consolidada do Controle</div>
+                    <div class="modal-section-content">${escapeHtml(formatField(control.descricao))}</div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">ISO 27001/27002</div>
+                    <div class="modal-section-content">${escapeHtml(formatField(control.iso))}</div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">NIST</div>
+                    <div class="modal-section-content">${escapeHtml(formatField(control.nist))}</div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">CIS</div>
+                    <div class="modal-section-content">${escapeHtml(formatField(control.cis))}</div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">Reguladores</div>
+                    <div class="modal-section-content">${escapeHtml(formatField(control.reguladores))}</div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">Responsável</div>
+                    <div class="modal-section-content">${escapeHtml(formatField(control.responsavel))}</div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">Evidência Esperada</div>
+                    <div class="modal-section-content">${escapeHtml(formatField(control.evidencia))}</div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        // Fechar modal
+        document.querySelector('.close').addEventListener('click', () => {
+            document.getElementById('modal').style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('modal');
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Função para processar CSV
+        function processCSV(text) {
+            controls = parseCSV(text);
+            
+            document.getElementById('loading').style.display = 'none';
+            
+            // Limpar tabela anterior
+            const table = document.getElementById('periodicTable');
+            table.innerHTML = '';
+            
+            // Limpar legenda anterior
+            const legend = document.getElementById('legend');
+            legend.innerHTML = '';
+            
+            createLegend();
+            
+            controls.forEach(control => {
+                const card = createCard(control);
+                table.appendChild(card);
+            });
+        }
+
+        // Função de debug
+        function showDebug(message) {
+            const debugDiv = document.getElementById('debugInfo');
+            const debugText = document.getElementById('debugText');
+            if (debugDiv && debugText) {
+                debugDiv.style.display = 'block';
+                debugText.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            }
+            console.log(message);
+        }
+
+        // Carregar CSV via fetch (para servidor web)
+        async function loadCSV() {
+            showDebug('Iniciando carregamento do CSV...');
+            try {
+                showDebug('Fazendo requisição para: QI_Tech_GRC_Controles (CSV).csv');
+                const response = await fetch('QI_Tech_GRC_Controles (CSV).csv');
+                showDebug('Resposta recebida. Status: ' + response.status);
+                
+                if (!response.ok) {
+                    throw new Error('Arquivo não encontrado (Status: ' + response.status + ')');
+                }
+                
+                showDebug('Lendo conteúdo do arquivo...');
+                const text = await response.text();
+                showDebug('Arquivo lido. Tamanho: ' + text.length + ' caracteres');
+                
+                if (!text || text.trim().length === 0) {
+                    throw new Error('Arquivo vazio');
+                }
+                
+                showDebug('Processando CSV...');
+                processCSV(text);
+                showDebug('CSV processado com sucesso! Total de controles: ' + controls.length);
+                
+                // Ocultar botão de upload manual se carregou automaticamente
+                document.getElementById('fileInputContainer').style.display = 'none';
+            } catch (error) {
+                showDebug('ERRO ao carregar CSV: ' + error.message);
+                // Mostrar botão de upload manual se não conseguiu carregar automaticamente
+                document.getElementById('fileInputContainer').style.display = 'block';
+                document.getElementById('loading').textContent = 'Erro ao carregar CSV automaticamente: ' + error.message + '. Use o botão acima para selecionar o arquivo CSV.';
+                console.error('Erro ao carregar CSV:', error);
+            }
+        }
+
+        // Carregar CSV via FileReader (para arquivo local)
+        document.getElementById('csvFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    processCSV(event.target.result);
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Inicializar quando a página carregar
+        window.addEventListener('DOMContentLoaded', function() {
+            showDebug('Página carregada. Iniciando...');
+            loadCSV();
+        });
+        
+        // Também tentar carregar imediatamente (caso DOMContentLoaded já tenha ocorrido)
+        if (document.readyState === 'loading') {
+            showDebug('Aguardando DOMContentLoaded...');
+        } else {
+            showDebug('DOM já carregado. Carregando CSV...');
+            loadCSV();
+        }
+    </script>
+</body>
+</html>
