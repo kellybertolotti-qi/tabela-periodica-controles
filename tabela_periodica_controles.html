@@ -471,22 +471,23 @@
                 .replace(/[\u0300-\u036f]/g, '');
         }
 
-        // Mapeamento de cores por domínio - Paleta distinta e harmoniosa
+        // Mapeamento de cores por domínio - Paleta com máxima distinção visual
+        // Cores primárias, secundárias e terciárias bem espaçadas no círculo cromático
         const domainColors = {
-            'Seguranca de Aplicacoes': { border: '#dc2626', bg: '#fee2e2' }, // Vermelho escuro
-            'Ativos, Dados & Classificacao': { border: '#2563eb', bg: '#dbeafe' }, // Azul royal
-            'Conscientizacao e Capacitacao': { border: '#9333ea', bg: '#f3e8ff' }, // Roxo profundo
-            'Continuidade & Resiliencia': { border: '#ea580c', bg: '#fff7ed' }, // Laranja terroso
-            'Desenvolvimento Seguro': { border: '#059669', bg: '#d1fae5' }, // Verde jade
-            'Governanca & Politicas': { border: '#f59e0b', bg: '#fef3c7' }, // Amarelo dourado
-            'Gestao de Identidades & Acessos': { border: '#0891b2', bg: '#cffafe' }, // Ciano azulado
-            'Gestao de Incidentes': { border: '#b91c1c', bg: '#fee2e2' }, // Vermelho carmesim
-            'Monitoramento & Logs': { border: '#1e40af', bg: '#dbeafe' }, // Azul índigo
-            'Cartoes & PCI DSS': { border: '#7c3aed', bg: '#ede9fe' }, // Roxo violeta
-            'Privacidade & LGPD': { border: '#047857', bg: '#d1fae5' }, // Verde floresta
-            'Gestao de Riscos': { border: '#c2410c', bg: '#ffedd5' }, // Laranja queimado
+            'Seguranca de Aplicacoes': { border: '#e11d48', bg: '#fce7f3' }, // Rosa vermelho
+            'Ativos, Dados & Classificacao': { border: '#1e40af', bg: '#dbeafe' }, // Azul índigo
+            'Conscientizacao e Capacitacao': { border: '#7c2d12', bg: '#fff7ed' }, // Marrom
+            'Continuidade & Resiliencia': { border: '#f59e0b', bg: '#fef3c7' }, // Amarelo âmbar
+            'Desenvolvimento Seguro': { border: '#065f46', bg: '#d1fae5' }, // Verde esmeralda escuro
+            'Governanca & Politicas': { border: '#92400e', bg: '#ffedd5' }, // Laranja bronze
+            'Gestao de Identidades & Acessos': { border: '#0e7490', bg: '#cffafe' }, // Ciano escuro
+            'Gestao de Incidentes': { border: '#be185d', bg: '#fce7f3' }, // Rosa fúcsia
+            'Monitoramento & Logs': { border: '#1e3a8a', bg: '#dbeafe' }, // Azul marinho
+            'Cartoes & PCI DSS': { border: '#581c87', bg: '#f3e8ff' }, // Roxo profundo
+            'Privacidade & LGPD': { border: '#166534', bg: '#dcfce7' }, // Verde floresta
+            'Gestao de Riscos': { border: '#b45309', bg: '#fef3c7' }, // Laranja âmbar escuro
             'Seguranca Tecnica & Operacoes': { border: '#334155', bg: '#f1f5f9' }, // Cinza ardósia
-            'Terceiros & Cloud': { border: '#475569', bg: '#f8fafc' } // Cinza azulado
+            'Terceiros & Cloud': { border: '#155e75', bg: '#ccfbf1' } // Ciano verde
         };
 
         // Função para obter cor do domínio
